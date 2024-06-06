@@ -3,4 +3,4 @@ soundfile
 librosa
 streamlit
 pytube
-tensorflow
+tensorflow==2.15.0
