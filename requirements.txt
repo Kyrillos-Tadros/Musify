@@ -1,6 +1,6 @@
-numpy
-soundfile
-librosa
-streamlit
-pytube
-tensorflow == 2.15.0
+numpy ==  1.24.4
+soundfile == 0.12.1
+librosa == 0.10.2
+streamlit == 1.15.0
+pytube == 15.0.0
+Tensorflow>=2.10.0
