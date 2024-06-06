@@ -9,7 +9,7 @@ from numpy_processing import load_and_process_audio
 from three_seconds_segmentation import segment_music_files
 from pytube import YouTube
 import io
-
+import youtube_dl
 # CSS styling
 background_css = """
 <style>
