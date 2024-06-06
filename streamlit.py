@@ -9,7 +9,8 @@ from numpy_processing import load_and_process_audio
 from three_seconds_segmentation import segment_music_files
 from pytube import YouTube
 import io
-
+# Print the youtube-dl version
+st.write(f"youtube-dl version: {youtube_dl.__version__}")
 # CSS styling
 background_css = """
 <style>
