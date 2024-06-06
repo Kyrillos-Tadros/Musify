@@ -1,0 +1,6 @@
+numpy
+soundfile
+librosa
+streamlit
+pytube
+tensorflow
