@@ -8,7 +8,6 @@ from keras.models import load_model
 from numpy_processing import load_and_process_audio
 from three_seconds_segmentation import segment_music_files
 from pytube import YouTube
-from pytube.exceptions import VideoUnavailable
 import io
 
 # CSS styling
@@ -73,19 +72,6 @@ GENRES = {
     9: "Rock"
 }
 
-def download_audio_from_youtube(url):
-    try:
-        yt = YouTube(url)
-        stream = yt.streams.filter(only_audio=True).first()
-        temp_file_path = stream.download()
-        return temp_file_path
-    except VideoUnavailable:
-        st.error(f"Error: The video {url} is unavailable.")
-        return None
-    except Exception as e:
-        st.error(f"Error downloading video: {e}")
-        return None
-
 with tab1:
     st.markdown("<h1 style='text-align: center; font-size: 1.5em;color: black;margin-top:-15px;'>Musify</h1>", unsafe_allow_html=True)
     st.markdown("<h2 style='text-align: center;color: black;margin-top: -19px;font-size: 0.9em;'>Genre Classification App</h2>", unsafe_allow_html=True)
@@ -147,8 +133,11 @@ with tab1:
 
         if youtube_url:
             # Download the audio from the YouTube video
-            temp_file_path = download_audio_from_youtube(youtube_url)
-            if temp_file_path:
+            try:
+                yt = YouTube(youtube_url)
+                video = yt.streams.filter(only_audio=True).first()
+                temp_file_path = video.download()
+
                 # Create a temporary directory for segmentation
                 temp_dir = "temp_segments"
                 os.makedirs(temp_dir, exist_ok=True)
@@ -181,12 +170,15 @@ with tab1:
                 st.markdown(genre_info[most_likely_genre.lower()])
 
                 # Embed the YouTube video player
-                st.markdown(f'<iframe width="560" height="315" src="https://www.youtube.com/embed/{youtube_url.split("v=")[-1]}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>', unsafe_allow_html=True)
+                st.markdown(f'<iframe width="560" height="315" src="https://www.youtube.com/embed/{yt.video_id}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>', unsafe_allow_html=True)
 
                 # Remove the temporary file and directory
                 os.remove(temp_file_path)
                 import shutil
                 shutil.rmtree(temp_dir)
+
+            except Exception as e:
+                st.error(f"Error processing YouTube URL: {e}")
 
 with tab2:
     st.markdown("""
