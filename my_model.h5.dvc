@@ -1,5 +1,12 @@
 outs:
-- md5: 98c8130972eff7d53d61d1e8c67dac7c
-  size: 264516688
+- md5: 819916a33b3e1b10d9153d01eb11fb76
+  size: 171017
   hash: md5
   path: my_model.h5
+md5: 9e0036bcd4a46c9da486266adb660880
+frozen: true
+deps:
+- checksum: '313008755663786671370394060242213331114'
+  size: 172183
+  hash: md5
+  path: https://drive.google.com/uc?id=1-0ASTcK6MNWWgeKNfs9xqBcqx6ydQU49
