@@ -1,12 +1,12 @@
 outs:
-- md5: 819916a33b3e1b10d9153d01eb11fb76
-  size: 171017
+- md5: a4daef157fd292d593160c37fe4db54d
+  size: 2371
   hash: md5
   path: my_model.h5
-md5: 9e0036bcd4a46c9da486266adb660880
+md5: d779ce23ef95f9f72e1e0f649a2ec05c
 frozen: true
 deps:
-- checksum: '313008755663786671370394060242213331114'
-  size: 172183
+- checksum: '23468167623043831994543812674221541514'
+  size: 0
   hash: md5
   path: https://drive.google.com/uc?id=1-0ASTcK6MNWWgeKNfs9xqBcqx6ydQU49
