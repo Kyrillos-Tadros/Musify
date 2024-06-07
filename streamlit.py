@@ -56,7 +56,7 @@ genre_info = {
 }
 
 # Load the trained model
-model = load_model('my_model.h5.dvc')
+model = load_model('my_model.h5')
 
 # Define the genre labels
 GENRES = {
