@@ -55,6 +55,7 @@ genre_info = {
     "rock": "Rock music is a genre that emerged in the 1950s and has since evolved into various subgenres. It typically features electric guitars and strong rhythms."
 }
 
+# Load the trained model
 model = load_model('my_model.h5')
 
 # Define the genre labels
