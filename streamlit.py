@@ -172,8 +172,8 @@ with tab1:
                 # Extract the video ID from the YouTube URL
                 video_id = yt.video_id
 
-                # Embed the YouTube video player
-                st.markdown(f'<iframe width="560" height="315" src="https://www.youtube.com/embed/{video_id}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>', unsafe_allow_html=True)
+                # Embed the YouTube video player using st.video
+                st.video(f'https://www.youtube.com/watch?v={video_id}')
 
                 # Remove the temporary file and directory
                 os.remove(temp_file_path)
@@ -182,6 +182,7 @@ with tab1:
 
             except Exception as e:
                 st.error(f"Error processing YouTube URL: {e}")
+
 with tab2:
     st.markdown("""
     <h2 style='color: black; font-size: 21px;'>How to Use the App</h2>
