@@ -9,10 +9,9 @@ from numpy_processing import load_and_process_audio
 from three_seconds_segmentation import segment_music_files
 from pytube import YouTube
 from io import BytesIO
-import subprocess
 
-# Run dvc pull to fetch the data
-subprocess.run(["dvc", "pull"], check=True)
+
+
 
 
 # CSS styling
