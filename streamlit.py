@@ -169,8 +169,11 @@ with tab1:
                 st.write(f"# Predicted Genre: {most_likely_genre}")
                 st.markdown(genre_info[most_likely_genre.lower()])
 
+                # Extract the video ID from the YouTube URL
+                video_id = yt.video_id
+
                 # Embed the YouTube video player
-                st.markdown(f'<iframe width="560" height="315" src="https://www.youtube.com/embed/{yt.video_id}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>', unsafe_allow_html=True)
+                st.markdown(f'<iframe width="560" height="315" src="https://www.youtube.com/embed/{video_id}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>', unsafe_allow_html=True)
 
                 # Remove the temporary file and directory
                 os.remove(temp_file_path)
@@ -179,7 +182,6 @@ with tab1:
 
             except Exception as e:
                 st.error(f"Error processing YouTube URL: {e}")
-
 with tab2:
     st.markdown("""
     <h2 style='color: black; font-size: 21px;'>How to Use the App</h2>
@@ -205,4 +207,4 @@ with tab3:
     genre_dropdown = st.selectbox("", list(genre_info.keys()))
 
     if genre_dropdown:
-        st.markdown(genre_info[genre_dropdown])
+        st.markdown(genre_info[genre_dropdown]) 
