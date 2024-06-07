@@ -76,7 +76,7 @@ GENRES = {
 def download_audio_to_buffer(url):
     buffer = BytesIO()
     youtube_video = YouTube(url)
-    audio = youtube_video.streams.get_audio_only()
+    audio = youtube_video.streams.filter(only_audio=True).first()
     audio.stream_to_buffer(buffer)
     buffer.seek(0)
     return buffer
@@ -114,7 +114,6 @@ def process_audio_file(audio_file):
     st.markdown(genre_info[most_likely_genre.lower()])
 
     # Clean up temporary directory
-    import shutil
     shutil.rmtree(temp_dir)
 
 with st.tabs(["Musify"])[0]:
