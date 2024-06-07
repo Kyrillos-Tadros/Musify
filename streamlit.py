@@ -10,6 +10,8 @@ from three_seconds_segmentation import segment_music_files
 from pytube import YouTube
 import io
 from io import BytesIO
+import yt_dlp
+
 
 # CSS styling
 background_css = """
@@ -75,10 +77,29 @@ GENRES = {
 
 def download_audio_to_buffer(url):
     buffer = BytesIO()
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'outtmpl': '-',
+        'noplaylist': True,
+        'quiet': True,
+        'no_warnings': True,
+        'default_search': 'auto',
+        'extract_flat': 'in_playlist',
+        'force_generic_extractor': True,
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
+        }],
+        'outtmpl': 'audio.%(ext)s',
+    }
     try:
-        youtube_video = YouTube(url)
-        audio = youtube_video.streams.filter(only_audio=True).first()
-        audio.stream_to_buffer(buffer)
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info_dict = ydl.extract_info(url, download=False)
+            audio_url = info_dict['url']
+            ydl.download([url])
+            with open('audio.mp3', 'rb') as f:
+                buffer.write(f.read())
         buffer.seek(0)
     except Exception as e:
         st.error(f"Error downloading audio: {e}")
