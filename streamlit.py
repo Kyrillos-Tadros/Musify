@@ -8,7 +8,7 @@ from keras.models import load_model
 from numpy_processing import load_and_process_audio
 from three_seconds_segmentation import segment_music_files
 from pytube import YouTube
-import io
+from io import BytesIO
 
 # CSS styling
 background_css = """
@@ -72,6 +72,14 @@ GENRES = {
     9: "Rock"
 }
 
+def download_audio_to_buffer(url):
+    buffer = BytesIO()
+    youtube_video = YouTube(url)
+    audio = youtube_video.streams.get_audio_only()
+    audio.stream_to_buffer(buffer)
+    buffer.seek(0)
+    return buffer
+
 with tab1:
     st.markdown("<h1 style='text-align: center; font-size: 1.5em;color: black;margin-top:-15px;'>Musify</h1>", unsafe_allow_html=True)
     st.markdown("<h2 style='text-align: center;color: black;margin-top: -19px;font-size: 0.9em;'>Genre Classification App</h2>", unsafe_allow_html=True)
@@ -134,13 +142,16 @@ with tab1:
         if youtube_url:
             # Download the audio from the YouTube video
             try:
-                yt = YouTube(youtube_url)
-                video = yt.streams.filter(only_audio=True).first()
-                temp_file_path = video.download()
+                buffer = download_audio_to_buffer(youtube_url)
 
                 # Create a temporary directory for segmentation
                 temp_dir = "temp_segments"
                 os.makedirs(temp_dir, exist_ok=True)
+
+                # Save buffer to a temporary file
+                temp_file_path = os.path.join(temp_dir, "temp_audio.mp3")
+                with open(temp_file_path, "wb") as f:
+                    f.write(buffer.getbuffer())
 
                 # Segment the downloaded audio into 3-second chunks
                 segment_music_files(temp_file_path, temp_dir, segment_duration=3)
@@ -169,11 +180,8 @@ with tab1:
                 st.write(f"# Predicted Genre: {most_likely_genre}")
                 st.markdown(genre_info[most_likely_genre.lower()])
 
-                # Extract the video ID from the YouTube URL
-                video_id = yt.video_id
-
                 # Embed the YouTube video player using st.video
-                st.video(f'https://www.youtube.com/watch?v={video_id}')
+                st.video(youtube_url)
 
                 # Remove the temporary file and directory
                 os.remove(temp_file_path)
