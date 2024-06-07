@@ -2,6 +2,7 @@ numpy
 soundfile 
 librosa 
 streamlit 
-pytube 
+pytube
+yt-dlp
 Tensorflow>=2.10.0
 
