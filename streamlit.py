@@ -55,7 +55,6 @@ genre_info = {
     "rock": "Rock music is a genre that emerged in the 1950s and has since evolved into various subgenres. It typically features electric guitars and strong rhythms."
 }
 
-# Load the trained model
 model = load_model('my_model.h5')
 
 # Define the genre labels
@@ -72,15 +71,7 @@ GENRES = {
     9: "Rock"
 }
 
-def download_audio_to_buffer(url):
-    buffer = BytesIO()
-    youtube_video = YouTube(url)
-    audio = youtube_video.streams.get_audio_only()
-    audio.stream_to_buffer(buffer)
-    buffer.seek(0)
-    return buffer
-
-with st.container():
+with tab1:
     st.markdown("<h1 style='text-align: center; font-size: 1.5em;color: black;margin-top:-15px;'>Musify</h1>", unsafe_allow_html=True)
     st.markdown("<h2 style='text-align: center;color: black;margin-top: -19px;font-size: 0.9em;'>Genre Classification App</h2>", unsafe_allow_html=True)
     st.markdown("<hr style='border-top: 1px solid #000;color: black;'>", unsafe_allow_html=True)
@@ -93,60 +84,97 @@ with st.container():
         uploaded_file = st.file_uploader("Upload a music file for genre classification:")
 
         if uploaded_file is not None:
-            # Process the uploaded file
-            process_audio_file(uploaded_file)
+            # Save the uploaded file to a temporary location
+            with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+                temp_file_path = temp_file.name
+                temp_file.write(uploaded_file.getvalue())
+
+            # Create a temporary directory for segmentation
+            temp_dir = "temp_segments"
+            os.makedirs(temp_dir, exist_ok=True)
+
+            # Segment the uploaded file into 3-second chunks
+            segment_music_files(temp_file_path, temp_dir, segment_duration=3)
+
+            # Extract features from the audio segments
+            audio_features = []
+            for filename in os.listdir(temp_dir):
+                if filename.endswith('.wav'):
+                    file_path = os.path.join(temp_dir, filename)
+                    features = load_and_process_audio(file_path)
+                    if features.size > 0:
+                        audio_features.append(features)
+
+            audio_features_np = np.array(audio_features)
+
+            # Make predictions
+            predictions = model.predict(audio_features_np)
+
+            # Calculate the cumulative probabilities for each genre
+            genre_probabilities = np.sum(predictions, axis=0)
+
+            # Determine the most likely genre
+            most_likely_genre_index = np.argmax(genre_probabilities)
+            most_likely_genre = GENRES[most_likely_genre_index]
+
+            st.write(f"# Predicted Genre: {most_likely_genre}")
+            st.markdown(genre_info[most_likely_genre.lower()])
+            st.audio(uploaded_file)
+
+            # Remove the temporary file and directory
+            os.remove(temp_file_path)
+            import shutil
+            shutil.rmtree(temp_dir)
 
     elif choice == "Enter a YouTube URL":
         # YouTube URL input
         youtube_url = st.text_input("Enter a YouTube video URL:", placeholder="Add URL here")
 
         if youtube_url:
+            # Download the audio from the YouTube video
             try:
-                with st.spinner("Downloading audio from YouTube..."):
-                    audio_buffer = download_audio_to_buffer(youtube_url)
-                st.audio(audio_buffer, format='audio/mp3')
-                # Process the downloaded audio
-                process_audio_file(audio_buffer)
-            except Exception as e:
-                st.error(f"Error processing YouTube URL: {e}")
+                yt = YouTube(youtube_url)
+                video = yt.streams.filter(only_audio=True).first()
+                temp_file_path = video.download()
 
-def process_audio_file(audio_file):
-    # Create a temporary directory for segmentation
-    temp_dir = "temp_segments"
-    os.makedirs(temp_dir, exist_ok=True)
+                # Create a temporary directory for segmentation
+                temp_dir = "temp_segments"
+                os.makedirs(temp_dir, exist_ok=True)
 
-    # Segment the audio file into 3-second chunks
-    segment_music_files(audio_file, temp_dir, segment_duration=3)
+                # Segment the downloaded audio into 3-second chunks
+                segment_music_files(temp_file_path, temp_dir, segment_duration=3)
 
-    # Extract features from the audio segments
-    audio_features = []
-    for filename in os.listdir(temp_dir):
-        if filename.endswith('.wav'):
-            file_path = os.path.join(temp_dir, filename)
-            features = load_and_process_audio(file_path)
-            if features.size > 0:
-                audio_features.append(features)
+                # Extract features from the audio segments
+                audio_features = []
+                for filename in os.listdir(temp_dir):
+                    if filename.endswith('.wav'):
+                        file_path = os.path.join(temp_dir, filename)
+                        features = load_and_process_audio(file_path)
+                        if features.size > 0:
+                            audio_features.append(features)
 
-    audio_features_np = np.array(audio_features)
+                audio_features_np = np.array(audio_features)
 
-    # Make predictions
-    predictions = model.predict(audio_features_np)
+                # Make predictions
+                predictions = model.predict(audio_features_np)
 
-    # Calculate the cumulative probabilities for each genre
-    genre_probabilities = np.sum(predictions, axis=0)
+                # Calculate the cumulative probabilities for each genre
+                genre_probabilities = np.sum(predictions, axis=0)
 
-    # Determine the most likely genre
-    most_likely_genre_index = np.argmax(genre_probabilities)
-    most_likely_genre = GENRES[most_likely_genre_index]
+                # Determine the most likely genre
+                most_likely_genre_index = np.argmax(genre_probabilities)
+                most_likely_genre = GENRES[most_likely_genre_index]
 
-    st.write(f"# Predicted Genre: {most_likely_genre}")
-    st.markdown(genre_info[most_likely_genre.lower()])
+                st.write(f"# Predicted Genre: {most_likely_genre}")
+                st.markdown(genre_info[most_likely_genre.lower()])
 
-    # Clean up temporary directory
-    import shutil
-    shutil.rmtree(temp_dir)
+                # Embed the YouTube video player
+                st.markdown(f'<iframe width="560" height="315" src="https://www.youtube.com/embed/{yt.video_id}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>', unsafe_allow_html=True)
 
-
+                # Remove the temporary file and directory
+                os.remove(temp_file_path)
+                import shutil
+                shutil.rmtree(temp_dir)
 
             except Exception as e:
                 st.error(f"Error processing YouTube URL: {e}")
