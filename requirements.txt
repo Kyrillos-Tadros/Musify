@@ -3,6 +3,7 @@ soundfile
 librosa 
 streamlit 
 pytube
-yt-dlp
+dvc
+dvc-gdrive
 Tensorflow>=2.10.0
 
