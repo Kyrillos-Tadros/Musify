@@ -75,10 +75,14 @@ GENRES = {
 
 def download_audio_to_buffer(url):
     buffer = BytesIO()
-    youtube_video = YouTube(url)
-    audio = youtube_video.streams.filter(only_audio=True).first()
-    audio.stream_to_buffer(buffer)
-    buffer.seek(0)
+    try:
+        youtube_video = YouTube(url)
+        audio = youtube_video.streams.filter(only_audio=True).first()
+        audio.stream_to_buffer(buffer)
+        buffer.seek(0)
+    except Exception as e:
+        st.error(f"Error downloading audio: {e}")
+        return None
     return buffer
 
 def process_audio_file(audio_file):
@@ -150,9 +154,10 @@ with st.tabs(["Musify"])[0]:
             try:
                 with st.spinner("Downloading audio from YouTube..."):
                     audio_buffer = download_audio_to_buffer(youtube_url)
-                st.audio(audio_buffer, format='audio/mp3')
-                # Process the downloaded audio
-                process_audio_file(audio_buffer)
+                if audio_buffer:
+                    st.audio(audio_buffer, format='audio/mp3')
+                    # Process the downloaded audio
+                    process_audio_file(audio_buffer)
             except Exception as e:
                 st.error(f"Error processing YouTube URL: {e}")
 
