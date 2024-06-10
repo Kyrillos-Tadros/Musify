@@ -12,9 +12,8 @@ from io import BytesIO
 import dvc.api
 
 path = "https://drive.usercontent.google.com/download?id=1-0ASTcK6MNWWgeKNfs9xqBcqx6ydQU49&export=download&authuser=1&confirm=t&uuid=b3a0dd32-bb61-487e-bd9d-498611b09a70&at=APZUnTUV8pZNFSf6cRcJ6L9g6rsz:1718001789568"
-repo = "/path/to/your/local/repo"  # Replace with the path to your local repository
 
-with dvc.api.open(path, repo=repo, remote="myremote") as fd:
+with dvc.api.open(path, repo=None, remote="myremote") as fd:
     model = load_model(fd.name)
 
 
