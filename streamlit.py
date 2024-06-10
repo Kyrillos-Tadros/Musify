@@ -11,7 +11,7 @@ from pytube import YouTube
 from io import BytesIO
 import dvc.api
 
-path = "https://drive.usercontent.google.com/download?id=1-0ASTcK6MNWWgeKNfs9xqBcqx6ydQU49&export=download&authuser=1&confirm=t&uuid=b3a0dd32-bb61-487e-bd9d-498611b09a70&at=APZUnTUV8pZNFSf6cRcJ6L9g6rsz:1718001789568"
+path = "https://drive.google.com/file/d/1-0ASTcK6MNWWgeKNfs9xqBcqx6ydQU49/view?usp=sharing"
 
 with dvc.api.open(path, repo=None, remote="myremote") as fd:
     model = load_model(fd.name)
