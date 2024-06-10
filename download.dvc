@@ -1,0 +1,11 @@
+md5: 168cb93eefc4ee8fb28151cba1a6774d
+frozen: true
+deps:
+- checksum: '177640865532202459760530597710518423062'
+  size: 264516688
+  hash: md5
+  path: 
+    https://drive.usercontent.google.com/download?id=1-0ASTcK6MNWWgeKNfs9xqBcqx6ydQU49&export=download&authuser=1&confirm=t&uuid=b3a0dd32-bb61-487e-bd9d-498611b09a70&at=APZUnTUV8pZNFSf6cRcJ6L9g6rsz:1718001789568
+outs:
+- hash: md5
+  path: download
