@@ -11,10 +11,7 @@ from pytube import YouTube
 from io import BytesIO
 import dvc.api
 
-path = "https://drive.google.com/file/d/1-0ASTcK6MNWWgeKNfs9xqBcqx6ydQU49/view?usp=sharing"
 
-with dvc.api.open(path) as fd:
-    model = load_model(fd.name)
 
 
 
@@ -64,7 +61,8 @@ genre_info = {
 }
 
 # Load the trained model
-model = load_model('my_model.h5')
+with dvc.api.open('my_model.h5', remote='myremote') as fd:
+    model = load_model(fd)
 
 # Define the genre labels
 GENRES = {
