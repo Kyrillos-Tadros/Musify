@@ -13,9 +13,8 @@ import dvc.api
 
 path = "https://drive.google.com/file/d/1-0ASTcK6MNWWgeKNfs9xqBcqx6ydQU49/view?usp=sharing"
 
-with dvc.api.open(path, repo=None, remote="myremote") as fd:
+with dvc.api.open(path) as fd:
     model = load_model(fd.name)
-
 
 
 
