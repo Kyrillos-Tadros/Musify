@@ -9,7 +9,11 @@ from numpy_processing import load_and_process_audio
 from three_seconds_segmentation import segment_music_files
 from pytube import YouTube
 from io import BytesIO
+import gdown
 
+model_path = 'my_model.h5'
+url = 'https://drive.google.com/uc?id=1-0ASTcK6MNWWgeKNfs9xqBcqx6ydQU49'
+output = gdown.download(url, model_path, quiet=False)
 
 
 
@@ -59,7 +63,7 @@ genre_info = {
 }
 
 # Load the trained model
-model = load_model('my_model.h5')
+model = load_model('model_path')
 
 # Define the genre labels
 GENRES = {
