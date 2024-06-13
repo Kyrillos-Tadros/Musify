@@ -9,8 +9,6 @@ from numpy_processing import load_and_process_audio
 from three_seconds_segmentation import segment_music_files
 from pytube import YouTube
 from io import BytesIO
-import dvc.api
-
 
 
 
@@ -60,7 +58,8 @@ genre_info = {
     "rock": "Rock music is a genre that emerged in the 1950s and has since evolved into various subgenres. It typically features electric guitars and strong rhythms."
 }
 
-
+# Load the trained model
+model = load_model('my_model.h5')
 
 # Define the genre labels
 GENRES = {
@@ -75,20 +74,6 @@ GENRES = {
     8: "Reggae",
     9: "Rock"
 }
-
-# Function to load the trained model
-@st.cache(allow_output_mutation=True)
-def load_my_model():
-    try:
-        with dvc.api.open('my_model.h5', remote='myremote') as fd:
-            model = load_model(fd)
-            return model
-    except Exception as e:
-        st.error(f"Failed to load the model: {e}")
-        return None
-
-# Load the trained model
-model = load_my_model()
 
 def download_audio_to_buffer(url):
     buffer = BytesIO()
