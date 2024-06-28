@@ -27,7 +27,10 @@ The project requires the following Python libraries:
 
 After installing the required libraries, you can clone the repository and run the Streamlit app:
 
-git clone https://github.com/Kyrillos-Tadros/musify.git cd musify streamlit run app.py
-
+```
+git clone https://github.com/Kyrillos-Tadros/musify.git
+cd musify
+streamlit run main.py
+```
 
 If you have suggestions for improving this project, please open an issue or submit a pull request.
